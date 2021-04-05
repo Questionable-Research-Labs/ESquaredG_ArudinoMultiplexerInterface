@@ -6,7 +6,7 @@
 #define MULTIPLEXER_BITS 4
 
 const uint8_t MULTIPLEXER_PINS_MAJOR [MULTIPLEXER_BITS] = {D0, D1, D2, D3};
-const uint8_t MULTIPLEXER_PINS_MINOR [MULTIPLEXER_BITS] = {D4, D5, D6, D7};
+const uint8_t MULTIPLEXER_PINS_MINOR [MULTIPLEXER_BITS] = {D7, D6, D5, D4};
 
 bool led_state = false;
 byte current_major_state = 0;
@@ -18,6 +18,7 @@ void multiplexerWriteByte( const uint8_t PINS [4] , byte byte_to_write) {
   }
 }
 
+// ICACHE_RAM_ATTR is intertup shit, don't worry about it
 ICACHE_RAM_ATTR void clock_interupt() {
   current_minor_state++;
   if (current_minor_state >= 16) {
