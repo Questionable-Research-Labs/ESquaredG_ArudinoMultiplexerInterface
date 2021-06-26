@@ -2,15 +2,15 @@
 #include <time.h>
 
 #define LED D1
-#define INTERUPT_PIN 15
+#define SYNC_PIN A0
 
 #define MULTIPLEXER_BITS 4
 
+#define MAJOR_COUNT_TO 4
+#define MINOR_COUNT_TO 5
+
 const unsigned long default_min_time_switch = 100000000 / 12000;
 unsigned long actual_min_time_switch = default_min_time_switch;
-
-const int MAJOR_COUNT_TO = 16;
-const int MINOR_COUNT_TO = 16;
 
 const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {D0, D1, D2, D3};
 const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {D7, D6, D5, D4};
@@ -37,7 +37,7 @@ void setup() {
     digitalWrite(MULTIPLEXER_PINS_MINOR[i], LOW);
   }
 
-  pinMode(INTERUPT_PIN, INPUT);
+  pinMode(SYNC_PIN, OUTPUT);
 }
 
 void loop() {
@@ -60,14 +60,25 @@ void multiplexerWriteByte(const uint8_t PINS[4], byte byte_to_write) {
 void incrementOutputs() {
   current_minor_state++;
   if (current_minor_state >= MINOR_COUNT_TO) {
-    current_minor_state = 0;
+
     current_major_state++;
-    if (current_major_state >= MAJOR_COUNT_TO) {
+
+    if (current_major_state > MAJOR_COUNT_TO) {
       current_major_state = 0;
+      current_minor_state = 0;
+      digitalWrite(SYNC_PIN, LOW);
+
+    } else if (current_major_state == MAJOR_COUNT_TO) {
+      digitalWrite(SYNC_PIN, HIGH);
+    } else {
+      current_minor_state = 0;
     }
   }
-  multiplexerWriteByte(MULTIPLEXER_PINS_MINOR, current_minor_state);
-  multiplexerWriteByte(MULTIPLEXER_PINS_MAJOR, current_major_state);
+  if (current_major_state != MAJOR_COUNT_TO) {
+    multiplexerWriteByte(MULTIPLEXER_PINS_MINOR, current_minor_state);
+    multiplexerWriteByte(MULTIPLEXER_PINS_MAJOR, current_major_state);
+  }
+
   // Serial.println("\n");
   // Serial.println(current_major_state);
   // Serial.println(current_minor_state);
