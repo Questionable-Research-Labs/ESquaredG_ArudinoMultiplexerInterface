@@ -1,21 +1,33 @@
 #include <Arduino.h>
 #include <time.h>
 
-#define LED D1
-#define SYNC_PIN A0
+
+
+
+
 
 #define MULTIPLEXER_BITS 4
 
 #define MAJOR_COUNT_TO 4
 #define MINOR_COUNT_TO 5
 
-const unsigned long default_min_time_switch = 100000000 / 12000;
-unsigned long actual_min_time_switch = default_min_time_switch;
+#ifdef ARDUINO_ESP8266_NODEMCU_ESP12E
+#define SYNC_PIN A0
 
 const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {D0, D1, D2, D3};
 const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {D7, D6, D5, D4};
+#endif
 
-bool led_state = false;
+#ifdef ARDUINO_ARCH_SAM
+#define SYNC_PIN 23
+
+const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {52, 50, 48, 46};
+const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {53, 51, 49, 47};
+#endif
+
+const unsigned long default_min_time_switch = 68;
+unsigned long actual_min_time_switch = default_min_time_switch;
+
 
 // Major is updated every cycle of minor.
 
