@@ -21,11 +21,12 @@ const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {D7, D6, D5, D4};
 #ifdef ARDUINO_ARCH_SAM
 #define SYNC_PIN 23
 
-const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {52, 50, 48, 46};
-const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {53, 51, 49, 47};
+const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {45, 43, 41, 39}; // Chainey Boi
+const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {53, 51, 49, 47}; // Groupey Boi
 #endif
 
-const unsigned long default_min_time_switch = 68;
+// The calculated wave period is 68 microseconds, but due to latency, 46 microseconds was experimentally found as the best timeing
+const unsigned long default_min_time_switch = 46;
 unsigned long actual_min_time_switch = default_min_time_switch;
 
 
@@ -50,6 +51,7 @@ void setup() {
   }
 
   pinMode(SYNC_PIN, OUTPUT);
+  Serial.println("Booted");
 }
 
 void loop() {
@@ -91,7 +93,4 @@ void incrementOutputs() {
     multiplexerWriteByte(MULTIPLEXER_PINS_MAJOR, current_major_state);
   }
 
-  // Serial.println("\n");
-  // Serial.println(current_major_state);
-  // Serial.println(current_minor_state);
 }
