@@ -1,11 +1,6 @@
 #include <Arduino.h>
 #include <time.h>
 
-
-
-
-
-
 #define MULTIPLEXER_BITS 4
 
 #define MAJOR_COUNT_TO 4
@@ -73,24 +68,28 @@ void multiplexerWriteByte(const uint8_t PINS[4], byte byte_to_write) {
 
 void incrementOutputs() {
   current_minor_state++;
+  
   if (current_minor_state >= MINOR_COUNT_TO) {
-
+    
     current_major_state++;
 
     if (current_major_state > MAJOR_COUNT_TO) {
       current_major_state = 0;
       current_minor_state = 0;
+
       digitalWrite(SYNC_PIN, LOW);
 
     } else if (current_major_state == MAJOR_COUNT_TO) {
       digitalWrite(SYNC_PIN, HIGH);
+      multiplexerWriteByte(MULTIPLEXER_PINS_MINOR, MINOR_COUNT_TO+1);
+      multiplexerWriteByte(MULTIPLEXER_PINS_MAJOR, MAJOR_COUNT_TO+1);
     } else {
       current_minor_state = 0;
     }
   }
+  
   if (current_major_state != MAJOR_COUNT_TO) {
     multiplexerWriteByte(MULTIPLEXER_PINS_MINOR, current_minor_state);
     multiplexerWriteByte(MULTIPLEXER_PINS_MAJOR, current_major_state);
   }
-
 }
