@@ -3,8 +3,8 @@
 
 #define MULTIPLEXER_BITS 4
 
-#define MAJOR_COUNT_TO 4
-#define MINOR_COUNT_TO 5
+#define MAJOR_COUNT_TO 2
+#define MINOR_COUNT_TO 2
 
 #ifdef ARDUINO_ESP8266_NODEMCU_ESP12E
 #define SYNC_PIN A0
@@ -21,7 +21,7 @@ const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {53, 51, 49, 47}; // Gr
 #endif
 
 // The calculated wave period is 68 microseconds, but due to latency, 46 microseconds was experimentally found as the best timeing
-const unsigned long default_min_time_switch = 46;
+const unsigned long default_min_time_switch = 1000000;
 unsigned long actual_min_time_switch = default_min_time_switch;
 
 
@@ -89,6 +89,7 @@ void incrementOutputs() {
   }
   
   if (current_major_state != MAJOR_COUNT_TO) {
+  // Serial.println(String("Writing to thing yes: MAJOR -> ") + current_major_state + ", MINOR -> " + current_minor_state);
     multiplexerWriteByte(MULTIPLEXER_PINS_MINOR, current_minor_state);
     multiplexerWriteByte(MULTIPLEXER_PINS_MAJOR, current_major_state);
   }
