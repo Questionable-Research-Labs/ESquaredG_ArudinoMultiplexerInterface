@@ -1,24 +1,4 @@
-#include <Arduino.h>
-#include <time.h>
-
-#define MULTIPLEXER_BITS 4
-
-#define MAJOR_COUNT_TO 4
-#define MINOR_COUNT_TO 5
-
-#ifdef ARDUINO_ESP8266_NODEMCU_ESP12E
-#define SYNC_PIN A0
-
-const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {D0, D1, D2, D3};
-const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {D7, D6, D5, D4};
-#endif
-
-#ifdef ARDUINO_ARCH_SAM
-#define SYNC_PIN 23
-
-const uint8_t MULTIPLEXER_PINS_MAJOR[MULTIPLEXER_BITS] = {45, 43, 41, 39}; // Chainey Boi
-const uint8_t MULTIPLEXER_PINS_MINOR[MULTIPLEXER_BITS] = {53, 51, 49, 47}; // Groupey Boi
-#endif
+#include <main.h>
 
 // The calculated wave period is 68 microseconds, but due to latency, 46 microseconds was experimentally found as the best timeing
 const unsigned long default_min_time_switch = 46;
